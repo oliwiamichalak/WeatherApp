@@ -14,7 +14,7 @@ import NVActivityIndicatorView
 import CoreLocation
 
 class ViewController: UIViewController {
-
+    
     @IBOutlet weak var locationLabel: UILabel!
     @IBOutlet weak var dayLabel: UILabel!
     @IBOutlet weak var weatherImage: UIImageView!
@@ -51,50 +51,50 @@ class ViewController: UIViewController {
             locationManager.startUpdatingLocation()
         }
     }
-
+    
     override func viewWillAppear(_ animated: Bool) {
         setBlueBackgroundView()
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-           let location = locations[0]
-           latitude = location.coordinate.latitude
-           longitude = location.coordinate.longitude
-           Alamofire.request("http://api.openweathermap.org/data/2.5/weather?lat=\(latitude)&lon=\(longitude)&appid=\(apiKey)&units=metric").responseJSON {
-               response in
-               self.activityIndicator.stopAnimating()
-               if let responseStr = response.result.value {
-                   let jsonResponse = JSON(responseStr)
-                   let jsonWeather = jsonResponse["weather"].array![0]
-                   let jsonTemp = jsonResponse["main"]
-                   let iconName = jsonWeather["icon"].stringValue
-                   
-                   self.locationLabel.text = jsonResponse["name"].stringValue
-                   self.weatherImage.image = UIImage(named: iconName)
-                   self.weatherLabel.text = jsonWeather["main"].stringValue
-                   self.temperatureLabel.text = "\(Int(round(jsonTemp["temp"].doubleValue)))"
-                   
-                   let date = Date()
-                   let dateFormatter = DateFormatter()
-                   dateFormatter.dateFormat = "EEEE"
-                   self.dayLabel.text = dateFormatter.string(from: date)
-                   
-                   let suffix = iconName.suffix(1)
-                   if(suffix == "n"){
-                       self.setGrayBackgroundVIew()
-                   }else{
-                       self.setBlueBackgroundView()
-                   }
-               }
-           }
-           self.locationManager.stopUpdatingLocation()
-       }
-       
-       func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-           print(error.localizedDescription)
-       }
-       
-
+        let location = locations[0]
+        latitude = location.coordinate.latitude
+        longitude = location.coordinate.longitude
+        Alamofire.request("http://api.openweathermap.org/data/2.5/weather?lat=\(latitude)&lon=\(longitude)&appid=\(apiKey)&units=metric").responseJSON {
+            response in
+            self.activityIndicator.stopAnimating()
+            if let responseStr = response.result.value {
+                let jsonResponse = JSON(responseStr)
+                let jsonWeather = jsonResponse["weather"].array![0]
+                let jsonTemp = jsonResponse["main"]
+                let iconName = jsonWeather["icon"].stringValue
+                
+                self.locationLabel.text = jsonResponse["name"].stringValue
+                self.weatherImage.image = UIImage(named: iconName)
+                self.weatherLabel.text = jsonWeather["main"].stringValue
+                self.temperatureLabel.text = "\(Int(round(jsonTemp["temp"].doubleValue)))"
+                
+                let date = Date()
+                let dateFormatter = DateFormatter()
+                dateFormatter.dateFormat = "EEEE"
+                self.dayLabel.text = dateFormatter.string(from: date)
+                
+                let suffix = iconName.suffix(1)
+                if(suffix == "n"){
+                    self.setGrayBackgroundVIew()
+                }else{
+                    self.setBlueBackgroundView()
+                }
+            }
+        }
+        self.locationManager.stopUpdatingLocation()
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        print(error.localizedDescription)
+    }
+    
+    
     func setBlueBackgroundView() {
         let topColor = UIColor(red: 95.0/255.0, green: 165.0/255.0, blue: 1.0, alpha: 1.0).cgColor
         let bottomColor = UIColor(red: 72.0/255.0, green: 114.0/255.0, blue: 184.0/255.0, alpha: 1.0).cgColor
@@ -104,9 +104,9 @@ class ViewController: UIViewController {
     
     func setGrayBackgroundVIew() {
         let topColor = UIColor(red: 151.0/255.0, green: 151.0/255.0, blue: 151.0/255.0, alpha: 1.0).cgColor
-               let bottomColor = UIColor(red: 72.0/255.0, green: 72.0/255.0, blue: 72.0/255.0, alpha: 1.0).cgColor
-               gradientLayer.frame = view.bounds
-               gradientLayer.colors = [topColor, bottomColor]
+        let bottomColor = UIColor(red: 72.0/255.0, green: 72.0/255.0, blue: 72.0/255.0, alpha: 1.0).cgColor
+        gradientLayer.frame = view.bounds
+        gradientLayer.colors = [topColor, bottomColor]
     }
 }
 
